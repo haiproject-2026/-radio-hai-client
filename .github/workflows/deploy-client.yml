@@ -1,0 +1,42 @@
+name: Déployer le site client (radio-hai-client)
+
+on:
+  push:
+    branches:
+      - main # Changez par master si votre branche s'appelle master sur GitHub
+    paths:
+      - 'radio-hai-client/**'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Récupérer le code du dépôt
+        uses: actions/checkout@v4
+
+      - name: Configurer Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: 'radio-hai-client/package-lock.json'
+
+      - name: Installer les dépendances
+        run: |
+          cd radio-hai-client
+          npm ci
+
+      - name: Compiler le projet (Build)
+        run: |
+          cd radio-hai-client
+          npm run build
+
+      - name: Déployer sur GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: radio-hai-client/dist # Dossier généré par Vite
+          branch: gh-pages-client
