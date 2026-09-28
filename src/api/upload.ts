@@ -1,4 +1,4 @@
-import axiosInstance from '../axiosInstance';
+import axiosInstance from './axiosInstance';
 
 interface UploadResponse {
   success: boolean;
@@ -14,14 +14,11 @@ export const uploadClientMedia = async (file: File): Promise<UploadResponse> => 
   const formData = new FormData();
   formData.append('file', file);
 
+  // Axios et le navigateur génèrent automatiquement le boundary multipart correct
   const response = await axiosInstance.post<UploadResponse>(
     '/uploads/client',
-    formData,
-    {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    },
+    formData
   );
+  
   return response.data;
 };
